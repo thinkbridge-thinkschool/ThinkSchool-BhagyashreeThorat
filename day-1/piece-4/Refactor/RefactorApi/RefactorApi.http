@@ -1,0 +1,6 @@
+@RefactorApi_HostAddress = http://localhost:5209
+
+GET {{RefactorApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
