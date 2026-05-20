@@ -1,0 +1,9 @@
+# AI Reflection
+
+Claude Code was most useful during the strategy pattern refactor inside OrderService. It correctly identified that the coupon and discount logic was tightly coupled to the service and would become difficult to maintain as new discount rules were introduced. The generated strategy interface and concrete implementation improved separation of concerns without significantly changing the existing architecture. However, Claude initially placed the updated total assignment in the wrong location, which could have caused inconsistent persisted order totals. I caught this issue while reviewing the diff and corrected it manually before applying the changes.
+
+The most important lesson from the Claude-generated refactor was that architectural improvements still require careful human review. Even when the structure looks cleaner, subtle business logic changes can be introduced accidentally. I reviewed the generated code the way like the pull request and validated that calculations, validation rules, and async behavior still worked correctly after the refactor.
+
+Copilot was most useful for generating repetitive unit test scaffolding. The inline suggestions helped quickly create validation and business-rule tests from simple comments, especially for negative quantity validation and inactive customer scenarios. However, some generated assertions were too generic and needed manual adjustment to properly validate expected behavior.
+
+If I were debugging a production issue late at night, I would use Claude first for larger architectural reasoning and Copilot for rapid implementation assistance inside individual files. Claude was stronger at restructuring code, while Copilot was faster for repetitive coding tasks and test generation.
