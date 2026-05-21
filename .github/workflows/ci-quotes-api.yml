@@ -1,0 +1,52 @@
+name: QuotesApi CI
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "day-3/piece-17/**"
+      - ".github/workflows/ci-quotes-api.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "day-3/piece-17/**"
+      - ".github/workflows/ci-quotes-api.yml"
+
+jobs:
+  build-and-test:
+    name: Build & Test (QuotesApi)
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: day-3/piece-17
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run auth & integration tests
+        run: >
+          dotnet test
+          --no-build
+          --configuration Release
+          --verbosity normal
+          --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: day-3/piece-17/**/*.trx
