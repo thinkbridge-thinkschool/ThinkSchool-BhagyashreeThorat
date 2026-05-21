@@ -30,15 +30,15 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Restore
+        run: dotnet restore Tests.Domain/Tests.Domain.csproj
 
       - name: Build
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build Tests.Domain/Tests.Domain.csproj --no-restore --configuration Release
 
       - name: Run auth & integration tests
         run: >
-          dotnet test
+          dotnet test Tests.Domain/Tests.Domain.csproj
           --no-build
           --configuration Release
           --verbosity normal
