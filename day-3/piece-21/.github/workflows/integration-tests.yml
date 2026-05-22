@@ -1,0 +1,72 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main, "feature/**" ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  integration-tests:
+    name: Run integration tests (SQL Server via Testcontainers)
+    runs-on: ubuntu-latest          # Docker is pre-installed on ubuntu-latest runners
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build (no restore)
+        run: dotnet build --no-restore --configuration Release
+
+      # Testcontainers pulls the mcr.microsoft.com/mssql/server:2022-latest image
+      # automatically on the first test run.  GitHub Actions runners have Docker
+      # available without any extra setup — no manual SQL Server service needed.
+      - name: Run integration tests
+        run: |
+          dotnet test Tests.Domain/Tests.Domain.csproj \
+            --no-build \
+            --configuration Release \
+            --verbosity normal \
+            --logger "trx;LogFileName=integration-results.trx"
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: "**/integration-results.trx"
+          retention-days: 7
+
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build (no restore)
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Run unit tests
+        run: |
+          dotnet test Quotes.Tests.Unit/Quotes.Tests.Unit.csproj \
+            --no-build \
+            --configuration Release \
+            --verbosity normal
