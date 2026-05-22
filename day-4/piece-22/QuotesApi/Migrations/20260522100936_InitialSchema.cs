@@ -59,8 +59,7 @@ namespace QuotesApi.Migrations
                 name: "CollectionItems",
                 columns: table => new
                 {
-                    QuoteId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuoteId = table.Column<int>(type: "int", nullable: false),
                     CollectionId = table.Column<int>(type: "int", nullable: false),
                     AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

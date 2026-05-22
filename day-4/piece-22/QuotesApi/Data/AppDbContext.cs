@@ -68,7 +68,7 @@ public class AppDbContext : DbContext
 
                 item.HasKey("CollectionId", nameof(CollectionItem.QuoteId));
 
-                item.Property(i => i.QuoteId).IsRequired();
+                item.Property(i => i.QuoteId).IsRequired().ValueGeneratedNever();
                 item.Property(i => i.AddedAt).IsRequired();
 
                 item.ToTable("CollectionItems");

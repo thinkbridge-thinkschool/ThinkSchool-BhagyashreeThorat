@@ -151,10 +151,7 @@ namespace QuotesApi.Migrations
                                 .HasColumnType("int");
 
                             b1.Property<int>("QuoteId")
-                                .ValueGeneratedOnAdd()
                                 .HasColumnType("int");
-
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("QuoteId"));
 
                             b1.Property<DateTime>("AddedAt")
                                 .HasColumnType("datetime2");
