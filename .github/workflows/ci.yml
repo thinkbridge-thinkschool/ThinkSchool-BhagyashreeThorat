@@ -26,6 +26,12 @@ jobs:
     name: Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # All `run:` steps execute relative to this directory.
+    # `uses:` steps (checkout, cache, upload-artifact) still resolve
+    # paths from the workspace root — see artifact paths below.
+    defaults:
+      run:
+        working-directory: day-4/piece-22
 
     steps:
       # ── 1. Source ───────────────────────────────────────────
@@ -53,7 +59,7 @@ jobs:
       # Restoring the test project also restores QuotesApi
       # (ProjectReference) — no separate restore step needed.
       - name: Restore
-        run: dotnet restore day-4/piece-22/Quotes.Tests.Unit/Quotes.Tests.Unit.csproj
+        run: dotnet restore Quotes.Tests.Unit/Quotes.Tests.Unit.csproj
 
       # ── 5. Build ─────────────────────────────────────────────
       # --no-restore: packages already downloaded; skip redundant
@@ -61,7 +67,7 @@ jobs:
       # QuotesApi through its ProjectReference.
       - name: Build
         run: |
-          dotnet build day-4/piece-22/Quotes.Tests.Unit/Quotes.Tests.Unit.csproj \
+          dotnet build Quotes.Tests.Unit/Quotes.Tests.Unit.csproj \
             --no-restore \
             --configuration Release
 
@@ -90,7 +96,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-results
-          path: TestResults/unit/*.trx
+          path: day-4/piece-22/TestResults/unit/*.trx
           retention-days: 30
 
       # ── 8. Upload coverage XML ───────────────────────────────
@@ -101,7 +107,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unit-coverage-report
-          path: TestResults/unit/**/coverage.cobertura.xml
+          path: day-4/piece-22/TestResults/unit/**/coverage.cobertura.xml
           retention-days: 30
 
   # ============================================================
@@ -115,6 +121,9 @@ jobs:
     name: Integration Tests (SQL Server via Testcontainers)
     runs-on: ubuntu-latest
     timeout-minutes: 30   # Extra headroom for Docker image pull (~2 GB)
+    defaults:
+      run:
+        working-directory: day-4/piece-22
 
     steps:
       # ── 1. Source ───────────────────────────────────────────
@@ -144,12 +153,12 @@ jobs:
 
       # ── 5. Restore ──────────────────────────────────────────
       - name: Restore
-        run: dotnet restore day-4/piece-22/Tests.Domain/Tests.Domain.csproj
+        run: dotnet restore Tests.Domain/Tests.Domain.csproj
 
       # ── 6. Build ─────────────────────────────────────────────
       - name: Build
         run: |
-          dotnet build day-4/piece-22/Tests.Domain/Tests.Domain.csproj \
+          dotnet build Tests.Domain/Tests.Domain.csproj \
             --no-restore \
             --configuration Release
 
@@ -178,7 +187,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: integration-test-results
-          path: TestResults/integration/*.trx
+          path: day-4/piece-22/TestResults/integration/*.trx
           retention-days: 30
 
       # ── 9. Upload coverage XML ───────────────────────────────
@@ -187,5 +196,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: integration-coverage-report
-          path: TestResults/integration/**/coverage.cobertura.xml
+          path: day-4/piece-22/TestResults/integration/**/coverage.cobertura.xml
           retention-days: 30
