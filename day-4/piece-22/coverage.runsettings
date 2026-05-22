@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <!--
   Coverlet data-collector configuration used by both test jobs in ci.yml.
-  --settings coverage.runsettings is passed to every dotnet test invocation.
+  Passed via: dotnet test ... -settings coverage.runsettings
 
   Threshold: CI fails when QuotesApi line coverage drops below 70 %.
 -->
