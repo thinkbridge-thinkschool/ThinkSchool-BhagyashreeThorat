@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
@@ -59,8 +59,9 @@ namespace QuotesApi.Migrations
                 name: "CollectionItems",
                 columns: table => new
                 {
+                    QuoteId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CollectionId = table.Column<int>(type: "int", nullable: false),
-                    QuoteId = table.Column<int>(type: "int", nullable: false),
                     AddedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -125,11 +126,20 @@ namespace QuotesApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "CollectionItems");
-            migrationBuilder.DropTable(name: "RefreshTokens");
-            migrationBuilder.DropTable(name: "Quotes");
-            migrationBuilder.DropTable(name: "Users");
-            migrationBuilder.DropTable(name: "Collections");
+            migrationBuilder.DropTable(
+                name: "CollectionItems");
+
+            migrationBuilder.DropTable(
+                name: "Quotes");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "Collections");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
