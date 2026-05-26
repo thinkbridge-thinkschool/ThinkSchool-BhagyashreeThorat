@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  Coverlet data-collector configuration used by both test jobs in ci.yml.
+  Passed via: dotnet test ... -settings coverage.runsettings
+
+  Threshold: CI fails when QuotesApi line coverage drops below 80 %.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <!-- Emit Cobertura XML so any tool (ReportGenerator, GitHub summary actions) can parse it -->
+          <Format>cobertura</Format>
+
+          <!-- Measure only the production assembly; exclude test projects automatically -->
+          <Include>[QuotesApi]*</Include>
+
+          <!-- Skip EF Core auto-generated migration files -->
+          <ExcludeByFile>**/Migrations/*.cs</ExcludeByFile>
+
+          <!-- Skip compiler-generated and explicitly excluded members -->
+          <ExcludeByAttribute>GeneratedCode,ExcludeFromCodeCoverage,CompilerGenerated</ExcludeByAttribute>
+
+          <!-- Threshold enforcement: dotnet test exits non-zero when coverage < 80 % -->
+          <Threshold>80</Threshold>
+          <ThresholdType>Line</ThresholdType>
+          <!-- Minimum: every included assembly must individually meet the threshold -->
+          <ThresholdStat>Minimum</ThresholdStat>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

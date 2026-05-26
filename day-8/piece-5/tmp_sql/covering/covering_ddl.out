@@ -1,0 +1,9 @@
+﻿Changed database context to 'QuotesDb'.
+IndexName                                                                                                                        ColumnName                                                                                                                       key_ordinal is_included_column
+-------------------------------------------------------------------------------------------------------------------------------- -------------------------------------------------------------------------------------------------------------------------------- ----------- ------------------
+IX_QuotePerformanceTest_Author                                                                                                   Author                                                                                                                                     1                  0
+IX_QuotePerformanceTest_Author                                                                                                   Category                                                                                                                                   0                  1
+IX_QuotePerformanceTest_Author                                                                                                   CreatedDate                                                                                                                                0                  1
+IX_QuotePerformanceTest_Author                                                                                                   Text                                                                                                                                       0                  1
+
+(4 rows affected)

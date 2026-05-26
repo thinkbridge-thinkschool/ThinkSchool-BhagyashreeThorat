@@ -1,0 +1,33 @@
+﻿Changed database context to 'QuotesDb'.
+DBCC execution completed. If DBCC printed error messages, contact your system administrator.
+DBCC execution completed. If DBCC printed error messages, contact your system administrator.
+SQL Server parse and compile time: 
+   CPU time = 2 ms, elapsed time = 6 ms.
+----- BEFORE: NC seek on Author + Key Lookup for [Text] -----
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+Table 'QuotePerformanceTest'. Scan count 1, logical reads 10568, physical reads 1, page server reads 0, read-ahead reads 4466, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 49 ms,  elapsed time = 126 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+StmtText                                                                                                                                                                             
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+SELECT Id, Author, [Text], Category, CreatedDate
+FROM dbo.QuotePerformanceTest WITH (INDEX (IX_QuotePerformanceTest_Author))
+WHERE Author = N'Marcus Aurelius'
+  AND IsDeleted = 0;  
+
+(1 rows affected)
+StmtText                                                                                                                                                                                                                                
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  |--Nested Loops(Inner Join, OUTER REFERENCES:([QuotesDb].[dbo].[QuotePerformanceTest].[Id], [Expr1002]) WITH UNORDERED PREFETCH)                                                                                                      
+       |--Index Seek(OBJECT:([QuotesDb].[dbo].[QuotePerformanceTest].[IX_QuotePerformanceTest_Author]), SEEK:([QuotesDb].[dbo].[QuotePerformanceTest].[Author]=N'Marcus Aurelius') ORDERED FORWARD)                                     
+       |--Clustered Index Seek(OBJECT:([QuotesDb].[dbo].[QuotePerformanceTest].[CIX_QuotePerformanceTest_Id]), SEEK:([QuotesDb].[dbo].[QuotePerformanceTest].[Id]=[QuotesDb].[dbo].[QuotePerformanceTest].[Id]) LOOKUP ORDERED FORWARD) 
+
+(3 rows affected)
