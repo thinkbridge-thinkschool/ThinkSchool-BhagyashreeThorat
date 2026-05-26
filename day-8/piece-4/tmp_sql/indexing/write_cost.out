@@ -1,0 +1,35 @@
+Changed database context to 'QuotesDb'.
+
+(5000 rows affected)
+SQL Server parse and compile time: 
+   CPU time = 1 ms, elapsed time = 1 ms.
+----- INSERT 5,000 rows into HEAP (no indexes) -----
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+Table 'QPT_NoIndex'. Scan count 0, logical reads 5238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table '#src________________________________________________________________________________________________________________000000000002'. Scan count 1, logical reads 250, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 21 ms,  elapsed time = 25 ms.
+
+(5000 rows affected)
+SQL Server parse and compile time: 
+   CPU time = 5 ms, elapsed time = 9 ms.
+----- INSERT 5,000 rows into INDEXED table (1 clustered + 2 NC) -----
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
+Table 'QPT_Indexed'. Scan count 0, logical reads 2931, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Worktable'. Scan count 2, logical reads 11747, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table '#src________________________________________________________________________________________________________________000000000002'. Scan count 1, logical reads 250, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 67 ms,  elapsed time = 74 ms.
+
+(5000 rows affected)
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+
+ SQL Server Execution Times:
+   CPU time = 0 ms,  elapsed time = 0 ms.
