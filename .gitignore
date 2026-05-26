@@ -4,3 +4,10 @@ obj/
 node_modules/
 *.user
 *.suo
+
+TestResults/
+*.db
+*.db-shm
+*.db-wal
+coverage.cobertura.xml
+*.out
