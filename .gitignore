@@ -11,3 +11,5 @@ TestResults/
 *.db-wal
 coverage.cobertura.xml
 *.out
+# Day-11 perf lab — downloaded load-test binary (do not commit)
+day-11/piece-10/PerfResults/bombardier.exe
