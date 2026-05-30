@@ -1,0 +1,171 @@
+Using launch settings from D:\thinkschool\day-12\piece-13\QuotesApi\Properties\launchSettings.json...
+[11:42:51 INF] [BOOT] Starting QuotesApi
+[11:42:52 WRN] [] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development.
+[11:42:53 DBG] [] Creating DbCommand for 'ExecuteNonQuery'.
+[11:42:53 DBG] [] Created DbCommand for 'ExecuteNonQuery' (127ms).
+[11:42:53 DBG] [] Initialized DbCommand for 'ExecuteNonQuery' (150ms).
+[11:42:53 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+[11:42:53 INF] [] Executed DbCommand (125ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+info: 5/30/2026 11:42:53.966 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (125ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+[11:42:53 DBG] [] Creating DbCommand for 'ExecuteScalar'.
+[11:42:53 DBG] [] Created DbCommand for 'ExecuteScalar' (2ms).
+[11:42:53 DBG] [] Initialized DbCommand for 'ExecuteScalar' (4ms).
+[11:42:53 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+[11:42:54 INF] [] Executed DbCommand (87ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result
+info: 5/30/2026 11:42:54.076 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (87ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+      SELECT @result
+[11:42:54 DBG] [] Creating DbCommand for 'ExecuteNonQuery'.
+[11:42:54 DBG] [] Created DbCommand for 'ExecuteNonQuery' (1ms).
+[11:42:54 DBG] [] Initialized DbCommand for 'ExecuteNonQuery' (4ms).
+[11:42:54 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+[11:42:54 INF] [] Executed DbCommand (61ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;
+info: 5/30/2026 11:42:54.271 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (61ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+      BEGIN
+          CREATE TABLE [__EFMigrationsHistory] (
+              [MigrationId] nvarchar(150) NOT NULL,
+              [ProductVersion] nvarchar(32) NOT NULL,
+              CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+          );
+      END;
+[11:42:54 DBG] [] Creating DbCommand for 'ExecuteNonQuery'.
+[11:42:54 DBG] [] Created DbCommand for 'ExecuteNonQuery' (1ms).
+[11:42:54 DBG] [] Initialized DbCommand for 'ExecuteNonQuery' (3ms).
+[11:42:54 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+[11:42:54 INF] [] Executed DbCommand (58ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT 1
+info: 5/30/2026 11:42:54.465 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (58ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT 1
+[11:42:54 DBG] [] Creating DbCommand for 'ExecuteScalar'.
+[11:42:54 DBG] [] Created DbCommand for 'ExecuteScalar' (1ms).
+[11:42:54 DBG] [] Initialized DbCommand for 'ExecuteScalar' (3ms).
+[11:42:54 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+[11:42:54 INF] [] Executed DbCommand (60ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+info: 5/30/2026 11:42:54.535 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (60ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT OBJECT_ID(N'[__EFMigrationsHistory]');
+[11:42:54 DBG] [] Creating DbCommand for 'ExecuteReader'.
+[11:42:54 DBG] [] Created DbCommand for 'ExecuteReader' (1ms).
+[11:42:54 DBG] [] Initialized DbCommand for 'ExecuteReader' (3ms).
+[11:42:54 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+[11:42:54 INF] [] Executed DbCommand (61ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];
+info: 5/30/2026 11:42:54.613 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (61ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [MigrationId], [ProductVersion]
+      FROM [__EFMigrationsHistory]
+      ORDER BY [MigrationId];
+[11:42:54 DBG] [] Closing data reader to 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433'.
+[11:42:54 DBG] [] A data reader for 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433' is being disposed after spending 16ms reading results.
+[11:42:54 DBG] [] Creating DbCommand for 'ExecuteScalar'.
+[11:42:54 DBG] [] Created DbCommand for 'ExecuteScalar' (1ms).
+[11:42:54 DBG] [] Initialized DbCommand for 'ExecuteScalar' (3ms).
+[11:42:54 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+[11:42:54 INF] [] Executed DbCommand (57ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result
+info: 5/30/2026 11:42:54.768 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (57ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      DECLARE @result int;
+      EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+      SELECT @result
+[11:42:55 DBG] [] Creating DbCommand for 'ExecuteReader'.
+[11:42:55 DBG] [] Created DbCommand for 'ExecuteReader' (1ms).
+[11:42:55 DBG] [] Initialized DbCommand for 'ExecuteReader' (3ms).
+[11:42:55 DBG] [] Executing DbCommand [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[Email] = N'admin@quotes.com') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+[11:42:55 INF] [] Executed DbCommand (63ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT CASE
+    WHEN EXISTS (
+        SELECT 1
+        FROM [Users] AS [u]
+        WHERE [u].[Email] = N'admin@quotes.com') THEN CAST(1 AS bit)
+    ELSE CAST(0 AS bit)
+END
+info: 5/30/2026 11:42:55.103 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (63ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Users] AS [u]
+              WHERE [u].[Email] = N'admin@quotes.com') THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+[11:42:55 DBG] [] Closing data reader to 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433'.
+[11:42:55 DBG] [] A data reader for 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433' is being disposed after spending 4ms reading results.
+[11:42:55 INF] [] Now listening on: http://localhost:5005
+[11:42:55 INF] [] Application started. Press Ctrl+C to shut down.
+[11:42:55 INF] [] Hosting environment: Development
+[11:42:55 INF] [] Content root path: D:\thinkschool\day-12\piece-13\QuotesApi
+[11:42:55 INF] [a2e907c498f502f90a51ef417d6e3c5e] HTTP GET /health responded 200 in 36.1672 ms
+[11:42:55 DBG] [217293365137790776c33ee38818e604] Creating DbCommand for 'ExecuteReader'.
+[11:42:55 DBG] [217293365137790776c33ee38818e604] Created DbCommand for 'ExecuteReader' (2ms).
+[11:42:55 DBG] [217293365137790776c33ee38818e604] Initialized DbCommand for 'ExecuteReader' (15ms).
+[11:42:55 DBG] [217293365137790776c33ee38818e604] Executing DbCommand [Parameters=[@p='50'], CommandType='Text', CommandTimeout='30']
+SELECT TOP(@p) [q].[Id], [q].[Author], [q].[Text]
+FROM [Quotes] AS [q]
+WHERE [q].[IsDeleted] = CAST(0 AS bit)
+ORDER BY [q].[Id]
+[11:42:55 INF] [217293365137790776c33ee38818e604] Executed DbCommand (113ms) [Parameters=[@p='50'], CommandType='Text', CommandTimeout='30']
+SELECT TOP(@p) [q].[Id], [q].[Author], [q].[Text]
+FROM [Quotes] AS [q]
+WHERE [q].[IsDeleted] = CAST(0 AS bit)
+ORDER BY [q].[Id]
+info: 5/30/2026 11:42:55.973 RelationalEventId.CommandExecuted[20101] (Microsoft.EntityFrameworkCore.Database.Command) 
+      Executed DbCommand (113ms) [Parameters=[@p='50'], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(@p) [q].[Id], [q].[Author], [q].[Text]
+      FROM [Quotes] AS [q]
+      WHERE [q].[IsDeleted] = CAST(0 AS bit)
+      ORDER BY [q].[Id]
+[11:42:55 DBG] [217293365137790776c33ee38818e604] Closing data reader to 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433'.
+[11:42:55 DBG] [217293365137790776c33ee38818e604] A data reader for 'QuotesDb' on server 'tcp:sql-quotes-bt123.database.windows.net,1433' is being disposed after spending 15ms reading results.
+[11:42:56 INF] [217293365137790776c33ee38818e604] HTTP GET /api/quotes-bulk/ef responded 200 in 245.4424 ms
