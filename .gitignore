@@ -13,3 +13,24 @@ coverage.cobertura.xml
 *.out
 # Day-11 perf lab — downloaded load-test binary (do not commit)
 day-11/piece-10/PerfResults/bombardier.exe
+
+
+bin/
+obj/
+.vs/
+.angular/
+dist/
+node_modules/
+
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+*Copy*
+obj-Copy*
+obj - Copy*
+
+*.dll
+*.exe
+*.pdb
