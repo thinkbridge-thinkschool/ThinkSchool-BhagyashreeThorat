@@ -1,0 +1,41 @@
+<section class="quotes">
+  <h1>Quotes</h1>
+
+  <!-- searchTerm signal bound explicitly: read with searchTerm(), write with
+       searchTerm.set($event). ngModel does NOT unwrap signals, so the [(...)]
+       sugar would bind the signal object and assign a readonly — wrong. -->
+  <input
+    type="search"
+    placeholder="Search by text or author…"
+    [ngModel]="searchTerm()"
+    (ngModelChange)="searchTerm.set($event)"
+    name="search"
+  />
+
+  <!-- Add form: passes raw values to addQuote(), no extra state needed -->
+  <form (submit)="addQuote(newText.value, newAuthor.value); newText.value=''; newAuthor.value=''; $event.preventDefault()">
+    <input #newText name="text" placeholder="Quote text" required />
+    <input #newAuthor name="author" placeholder="Author" required />
+    <button type="submit">Add</button>
+  </form>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="status">Loading quotes…</p>
+  } @else if (filteredQuotes().length === 0) {
+    <p class="status">No quotes found.</p>
+  } @else {
+    <ul class="quote-list">
+      @for (quote of filteredQuotes(); track quote.id) {
+        <li class="quote">
+          <blockquote>{{ quote.text }}</blockquote>
+          <cite>— {{ quote.author }}</cite>
+          <button type="button" (click)="removeQuote(quote.id)">Delete</button>
+        </li>
+      }
+    </ul>
+  }
+</section>
