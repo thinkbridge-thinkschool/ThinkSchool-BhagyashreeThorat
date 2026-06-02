@@ -1,0 +1,56 @@
+2026-06-02 13:12:04.120 spid10s deadlock-list
+2026-06-02 13:12:04.120 spid10s  deadlock victim=process980423088
+2026-06-02 13:12:04.330 spid10s -- ============================================================
+-- SESSION A  --  REPRODUCE deadlock (BROKEN ordering)
+-- Two resources: DeadlockDemo row Id=1 and row Id=2
+-- Lock order for A:  Id=1  THEN  Id=2
+-- ============================================================
+SET NOCOUNT ON;
+PRINT 'A: start  spid=' + CAST(@@SPID AS varchar(10));
+
+BEGIN TRAN;
+
+    -- Take exclusive lock on resource #1 (row Id=1)
+    UPDATE dbo.DeadlockDemo SET Value = Value + 1 WHERE Id = 1;
+    PRINT 'A: locked Id=1';
+
+    -- Hold long enough for B to grab the opposite row, guaranteeing a cycle
+    WAITFOR DELAY '00:00:04';
+
+    -- Now reach for resource #2 (row Id=2) -- B already holds it -> WAIT
+    PRINT 'A: requesting Id=2 ...';
+    UPDATE dbo.DeadlockDemo SET Value = Value + 1 WHERE Id = 2;
+    PRINT 'A: locked Id=2';
+
+COMMIT;
+PRINT 'A: committed OK';
+    
+2026-06-02 13:12:04.460 spid10s -- ============================================================
+-- SESSION B  --  REPRODUCE deadlock (BROKEN ordering)
+-- Two resources: DeadlockDemo row Id=1 and row Id=2
+-- Lock order for B:  Id=2  THEN  Id=1   <-- OPPOSITE of Session A
+-- ============================================================
+SET NOCOUNT ON;
+PRINT 'B: start  spid=' + CAST(@@SPID AS varchar(10));
+
+BEGIN TRAN;
+
+    -- Take exclusive lock on resource #2 (row Id=2)
+    UPDATE dbo.DeadlockDemo SET Value = Value + 1 WHERE Id = 2;
+    PRINT 'B: locked Id=2';
+
+    -- Hold long enough for A to grab the opposite row, guaranteeing a cycle
+    WAITFOR DELAY '00:00:04';
+
+    -- Now reach for resource #1 (row Id=1) -- A already holds it -> WAIT
+    PRINT 'B: requesting Id=1 ...';
+    UPDATE dbo.DeadlockDemo SET Value = Value + 1 WHERE Id = 1;
+    PRINT 'B: locked Id=1';
+
+COMMIT;
+PRINT 'B: committed OK';
+    
+2026-06-02 13:12:04.480 spid10s    keylock hobtid=72057594045857792 dbid=5 objectname=QuotesDb.dbo.DeadlockDemo indexname=PK__Deadlock__3214EC074E094628 id=lock985250b80 mode=X associatedObjectId=72057594045857792
+2026-06-02 13:12:04.480 spid10s    keylock hobtid=72057594045857792 dbid=5 objectname=QuotesDb.dbo.DeadlockDemo indexname=PK__Deadlock__3214EC074E094628 id=lock98524aa00 mode=X associatedObjectId=72057594045857792
+
+(6 rows affected)
