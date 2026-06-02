@@ -21,15 +21,22 @@ describe('Quotes page', () => {
     expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('renders an Admin link to the login page (no create form on homepage)', () => {
+  it('renders an Admin button that opens the login popup (no create form on homepage)', () => {
     const fixture = TestBed.createComponent(Quotes);
     fixture.detectChanges();
     const el: HTMLElement = fixture.nativeElement;
 
-    const adminLink = el.querySelector('a.admin-link');
-    expect(adminLink?.getAttribute('href')).toBe('/login');
+    // Admin is now a button (opens a modal), not a link to /login.
+    const adminButton = el.querySelector('button.admin-link') as HTMLButtonElement;
+    expect(adminButton).not.toBeNull();
 
-    // The create form must NOT live on the public homepage anymore.
+    // The modal is not mounted until the button is clicked.
+    expect(el.querySelector('app-admin-login-modal')).toBeNull();
+    adminButton.click();
+    fixture.detectChanges();
+    expect(el.querySelector('app-admin-login-modal')).not.toBeNull();
+
+    // The create form must NOT live on the public homepage.
     expect(el.querySelector('form.create')).toBeNull();
   });
 

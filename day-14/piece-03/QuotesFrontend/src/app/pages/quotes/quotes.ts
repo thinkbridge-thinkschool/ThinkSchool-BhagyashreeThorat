@@ -1,6 +1,13 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   Observable,
   Subject,
@@ -15,17 +22,42 @@ import {
 } from 'rxjs';
 import { QuoteService } from '../../services/quote/quote.service';
 import { Quote, QuoteDetail } from '../../models/quote.model';
+import { AdminLoginModal } from '../../components/admin-login-modal/admin-login-modal';
 
 @Component({
   selector: 'app-quotes',
   standalone: true,
-  imports: [RouterLink],
+  imports: [AdminLoginModal],
   templateUrl: './quotes.html',
   styleUrl: './quotes.css',
 })
 export class Quotes {
   // inject() everywhere — no constructor injection.
   private readonly quoteService = inject(QuoteService);
+  private readonly router = inject(Router);
+
+  // --- ADMIN LOGIN MODAL ---
+  // The Admin button opens an in-page dialog instead of navigating to a route.
+  protected readonly showLogin = signal(false);
+  // Native ref to the Admin button so focus returns there when the modal closes
+  // (a11y: focus should not get lost on the page body).
+  private readonly adminButton =
+    viewChild<ElementRef<HTMLButtonElement>>('adminButton');
+
+  protected openLogin(): void {
+    this.showLogin.set(true);
+  }
+
+  protected closeLogin(): void {
+    this.showLogin.set(false);
+    this.adminButton()?.nativeElement.focus();
+  }
+
+  protected onLoggedIn(): void {
+    // Tokens are already stored by AuthService; close the popup and go to /admin.
+    this.showLogin.set(false);
+    this.router.navigate(['/admin']);
+  }
 
   // --- PAGINATION ---
   // The list is paged; search results respect the same page/size. (No page UI

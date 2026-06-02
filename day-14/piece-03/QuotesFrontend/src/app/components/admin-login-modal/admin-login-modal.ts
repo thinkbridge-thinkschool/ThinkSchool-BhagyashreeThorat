@@ -1,11 +1,18 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  afterNextRender,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { LoginRequest } from '../../models/auth.model';
 
@@ -17,18 +24,24 @@ interface LoginForm {
 }
 type FieldName = keyof LoginForm;
 
+// Self-contained login dialog. Owns NO auth/token logic — it only collects
+// credentials and delegates to AuthService, then signals the parent. The parent
+// decides what closing/navigating means, via the two outputs below.
 @Component({
-  selector: 'app-login',
+  selector: 'app-admin-login-modal',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './login.html',
-  styleUrl: './login.css',
+  templateUrl: './admin-login-modal.html',
+  styleUrl: './admin-login-modal.css',
 })
-export class Login {
+export class AdminLoginModal {
   private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
 
-  // Native refs so a failed submit moves focus to the first invalid control.
+  // Login succeeded — parent should close the modal and navigate to /admin.
+  readonly loggedIn = output<void>();
+  // User dismissed the dialog (X button, backdrop click, or Escape).
+  readonly closed = output<void>();
+
   private readonly emailInput =
     viewChild<ElementRef<HTMLInputElement>>('emailInput');
   private readonly passwordInput =
@@ -48,13 +61,11 @@ export class Login {
     }),
   });
 
-  private readonly focusTargets: ReadonlyArray<{
-    name: FieldName;
-    el: () => ElementRef<HTMLElement> | undefined;
-  }> = [
-    { name: 'email', el: this.emailInput },
-    { name: 'password', el: this.passwordInput },
-  ];
+  constructor() {
+    // Move focus into the dialog as soon as it renders (a11y: focus the modal,
+    // not the page behind it).
+    afterNextRender(() => this.emailInput()?.nativeElement.focus());
+  }
 
   protected isInvalid(name: FieldName): boolean {
     const control = this.form.controls[name];
@@ -63,6 +74,13 @@ export class Login {
 
   protected describedBy(name: FieldName): string | null {
     return this.isInvalid(name) ? `${name}-error` : null;
+  }
+
+  // Don't let the user close mid-request — the form is disabled then anyway.
+  protected dismiss(): void {
+    if (!this.submitting()) {
+      this.closed.emit();
+    }
   }
 
   protected submit(): void {
@@ -87,8 +105,8 @@ export class Login {
 
     this.auth.login(credentials).subscribe({
       next: () => {
-        // AuthService has already stored the tokens via tap().
-        this.router.navigate(['/admin']);
+        // AuthService has already persisted the tokens via tap().
+        this.loggedIn.emit();
       },
       error: () => {
         this.loginError.set('Login failed. Check your email and password.');
@@ -99,11 +117,12 @@ export class Login {
   }
 
   private focusFirstInvalid(): void {
-    for (const target of this.focusTargets) {
-      if (this.form.controls[target.name].invalid) {
-        target.el()?.nativeElement.focus();
-        return;
-      }
+    if (this.form.controls.email.invalid) {
+      this.emailInput()?.nativeElement.focus();
+      return;
+    }
+    if (this.form.controls.password.invalid) {
+      this.passwordInput()?.nativeElement.focus();
     }
   }
 }

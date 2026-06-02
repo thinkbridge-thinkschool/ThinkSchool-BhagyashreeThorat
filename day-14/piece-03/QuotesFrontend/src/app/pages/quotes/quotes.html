@@ -1,8 +1,16 @@
 <section class="quotes">
   <header class="quotes-header">
     <h1>Quotes</h1>
-    <!-- Public homepage: NO create form here. Admins sign in via this link. -->
-    <a class="admin-link" routerLink="/login">Admin</a>
+    <!-- Public homepage: NO create form here. Admin opens a login popup
+         in-place (no route change) via this button. -->
+    <button
+      #adminButton
+      type="button"
+      class="admin-link"
+      (click)="openLogin()"
+    >
+      Admin
+    </button>
   </header>
 
   <!-- Search over the loaded list (label associated via for/id). -->
@@ -87,4 +95,12 @@
       }
     </aside>
   </div>
+
+  <!-- Admin login popup. Mounted only while open; emits loggedIn / closed. -->
+  @if (showLogin()) {
+    <app-admin-login-modal
+      (loggedIn)="onLoggedIn()"
+      (closed)="closeLogin()"
+    />
+  }
 </section>
