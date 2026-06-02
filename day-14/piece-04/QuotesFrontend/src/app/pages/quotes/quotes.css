@@ -1,0 +1,114 @@
+.quotes {
+  max-width: 960px;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+}
+
+.quotes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-link {
+  font-size: 0.9rem;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #4f46e5;
+  border-radius: 6px;
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.admin-link:hover,
+.admin-link:focus {
+  background: #f5f3ff;
+}
+
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0.75rem 0 1.25rem;
+}
+
+.search input {
+  padding: 0.4rem 0.6rem;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.quote-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quote {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.quote.selected {
+  border-color: #4f46e5;
+  background: #f5f3ff;
+}
+
+.quote-pick {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.quote blockquote {
+  margin: 0;
+  font-style: italic;
+}
+
+.quote cite {
+  display: block;
+  margin-top: 0.25rem;
+  color: #666;
+}
+
+.detail-panel {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.detail dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1rem;
+  margin: 0.75rem 0 0;
+}
+
+.detail dt {
+  font-weight: 600;
+  color: #444;
+}
+
+.detail dd {
+  margin: 0;
+}
+
+.status {
+  color: #666;
+}
+
+.error {
+  color: #c00;
+}
