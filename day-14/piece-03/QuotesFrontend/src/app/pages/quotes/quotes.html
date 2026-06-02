@@ -1,0 +1,90 @@
+<section class="quotes">
+  <header class="quotes-header">
+    <h1>Quotes</h1>
+    <!-- Public homepage: NO create form here. Admins sign in via this link. -->
+    <a class="admin-link" routerLink="/login">Admin</a>
+  </header>
+
+  <!-- Search over the loaded list (label associated via for/id). -->
+  <div class="search">
+    <label for="quote-search">Search quotes</label>
+    <input
+      #searchBox
+      id="quote-search"
+      type="search"
+      placeholder="Filter by text or author…"
+      (input)="searchTerm.set(searchBox.value)"
+    />
+  </div>
+
+  <div class="layout">
+    <!-- ============ LIST PANEL ============ -->
+    <div class="list-panel">
+      @if (loading()) {
+        <p class="status">Loading quotes…</p>
+      } @else if (error()) {
+        <p class="error">
+          {{ error() }}
+          <button type="button" (click)="retry()">Retry</button>
+        </p>
+      } @else if (isEmpty()) {
+        <p class="status">No quotes yet.</p>
+      } @else if (noMatches()) {
+        <p class="status">No quotes match “{{ searchTerm() }}”.</p>
+      } @else {
+        <ul class="quote-list">
+          @for (quote of quotes(); track quote.id) {
+            <li
+              class="quote"
+              [class.selected]="quote.id === selectedQuoteId()"
+            >
+              <button
+                type="button"
+                class="quote-pick"
+                (click)="selectQuote(quote.id)"
+              >
+                <blockquote>{{ quote.text }}</blockquote>
+                <cite>— {{ quote.author }}</cite>
+              </button>
+              <button
+                type="button"
+                class="quote-delete"
+                (click)="deleteQuote(quote.id)"
+              >
+                Delete
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- ============ DETAIL PANEL ============ -->
+    <aside class="detail-panel">
+      <h2>Detail</h2>
+
+      @if (selectedQuoteLoading()) {
+        <p class="status">Loading detail…</p>
+      } @else if (selectedQuoteError()) {
+        <p class="error">{{ selectedQuoteError() }}</p>
+      } @else if (selectedQuote(); as detail) {
+        <article class="detail">
+          <blockquote>{{ detail.text }}</blockquote>
+          <cite>— {{ detail.author }}</cite>
+          <dl>
+            <dt>ID</dt>
+            <dd>{{ detail.id }}</dd>
+            <dt>Author ID</dt>
+            <dd>{{ detail.authorId }}</dd>
+            <dt>Owner ID</dt>
+            <dd>{{ detail.ownerId ?? '—' }}</dd>
+            <dt>Deleted</dt>
+            <dd>{{ detail.isDeleted ? 'Yes' : 'No' }}</dd>
+          </dl>
+        </article>
+      } @else {
+        <p class="status">Select a quote to see its details.</p>
+      }
+    </aside>
+  </div>
+</section>
