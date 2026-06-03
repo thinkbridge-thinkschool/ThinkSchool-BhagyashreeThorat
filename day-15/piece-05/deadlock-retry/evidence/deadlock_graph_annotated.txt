@@ -1,0 +1,62 @@
+============================================================
+DEADLOCK GRAPH — key elements (stack frames removed for clarity)
+Source: system_health Extended Events session (xml_deadlock_report)
+Full raw XML: deadlock_graph.xml  |  Error-log copy (TF1222): tf1222_errorlog.txt
+Captured: 2026-06-02 13:12:04.110 (server UTC)
+============================================================
+
+<deadlock>
+
+  <victim-list>
+    <victimProcess id="process980423088"/>          <-- VICTIM = spid 53 = Session A
+  </victim-list>
+
+  <process-list>
+
+    <!-- Session A (spid 53) : holds Id=1, WAITING for Id=2 -->
+    <process id="process980423088" spid="53"
+             waitresource="KEY: 5:72057594045857792 (61a06abd401c)"   <-- waiting on row Id=2
+             lockMode="X" transactionname="user_transaction"
+             isolationlevel="read committed (2)" currentdbname="QuotesDb">
+      ... UPDATE dbo.DeadlockDemo ... WHERE Id = 2;   (broken: A order = 1 then 2)
+    </process>
+
+    <!-- Session B (spid 52) : holds Id=2, WAITING for Id=1 -->
+    <process id="process980743468" spid="52"
+             waitresource="KEY: 5:72057594045857792 (8194443284a0)"   <-- waiting on row Id=1
+             lockMode="X" transactionname="user_transaction"
+             isolationlevel="read committed (2)" currentdbname="QuotesDb">
+      ... UPDATE dbo.DeadlockDemo ... WHERE Id = 1;   (broken: B order = 2 then 1)
+    </process>
+
+  </process-list>
+
+  <resource-list>
+
+    <!-- RESOURCE #1 : the Id=2 key -->
+    <keylock objectname="QuotesDb.dbo.DeadlockDemo"
+             indexname="PK__Deadlock__3214EC074E094628" mode="X">
+      <owner-list>  <owner  id="process980743468" mode="X"/></owner-list>   <-- B owns it
+      <waiter-list> <waiter id="process980423088" mode="X" requestType="wait"/></waiter-list> <-- A waits
+    </keylock>
+
+    <!-- RESOURCE #2 : the Id=1 key -->
+    <keylock objectname="QuotesDb.dbo.DeadlockDemo"
+             indexname="PK__Deadlock__3214EC074E094628" mode="X">
+      <owner-list>  <owner  id="process980423088" mode="X"/></owner-list>   <-- A owns it
+      <waiter-list> <waiter id="process980743468" mode="X" requestType="wait"/></waiter-list> <-- B waits
+    </keylock>
+
+  </resource-list>
+
+</deadlock>
+
+------------------------------------------------------------
+WAIT CHAIN (circular wait — the textbook deadlock):
+
+   A (spid53) holds X on Id=1  ──waits for──>  Id=2 (held by B)
+   B (spid52) holds X on Id=2  ──waits for──>  Id=1 (held by A)
+                       ^                              |
+                       └──────────────────────────────┘
+   Cycle detected -> SQL Server lock monitor kills A (spid53) as victim (Msg 1205).
+------------------------------------------------------------
