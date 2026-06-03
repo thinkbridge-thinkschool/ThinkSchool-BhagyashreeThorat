@@ -1,0 +1,62 @@
+.admin {
+  max-width: 600px;
+  margin: 2rem auto;
+  font-family: system-ui, sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logout {
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.field input,
+.field textarea {
+  padding: 0.45rem 0.6rem;
+  font: inherit;
+}
+
+.field textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+.field-error {
+  margin: 0;
+  color: #c00;
+  font-size: 0.85rem;
+}
+
+button[type='submit'] {
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+button[type='submit']:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+
+.status--error {
+  color: #c00;
+}
+
+.status--success {
+  color: #166534;
+}
+
+.status--busy {
+  color: #666;
+}
