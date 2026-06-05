@@ -1,0 +1,64 @@
+<section class="admin">
+  <header class="admin-header">
+    <h1>Admin</h1>
+    <button type="button" class="logout" (click)="logout()">Logout</button>
+  </header>
+
+  <h2>Create quote</h2>
+
+  <form [formGroup]="form" (ngSubmit)="createQuote()" novalidate>
+    <div class="field">
+      <label for="author">Author</label>
+      <input
+        #authorInput
+        id="author"
+        type="text"
+        formControlName="author"
+        autocomplete="off"
+        [attr.aria-invalid]="isInvalid('author')"
+        [attr.aria-describedby]="describedBy('author')"
+      />
+      @if (isInvalid('author')) {
+        <p id="author-error" class="field-error" role="alert">
+          Author is required.
+        </p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="text">Text</label>
+      <textarea
+        #textInput
+        id="text"
+        formControlName="text"
+        [attr.aria-invalid]="isInvalid('text')"
+        [attr.aria-describedby]="describedBy('text')"
+      ></textarea>
+      @if (isInvalid('text')) {
+        <p id="text-error" class="field-error" role="alert">
+          Text is required.
+        </p>
+      }
+    </div>
+
+    <button type="submit" [disabled]="submitting()">
+      @if (submitting()) {
+        Saving…
+      } @else {
+        Create quote
+      }
+    </button>
+
+    @if (submitting()) {
+      <p class="status status--busy" role="status">Submitting quote…</p>
+    }
+    @if (serverError(); as message) {
+      <p class="status status--error" role="alert">{{ message }}</p>
+    }
+    @if (createdQuote(); as created) {
+      <p class="status status--success" role="status">
+        Created quote #{{ created.id }} by {{ created.author }}.
+      </p>
+    }
+  </form>
+</section>
