@@ -75,12 +75,18 @@ try
     builder.Services.AddControllers();
     builder.Services.AddHealthChecks();
 
-    // CORS: allow the Angular dev server (localhost:4200) to call this API.
-    const string CorsPolicy = "AllowAngularDev";
+    // CORS: allowed browser origins are config-driven so we can add the deployed
+    // frontend (Container Apps / SWA URL) without a code change — set
+    // Cors__AllowedOrigins__0, __1, ... as env vars on the container app.
+    // Falls back to the Angular dev server when nothing is configured.
+    const string CorsPolicy = "AllowFrontend";
+    var allowedOrigins = builder.Configuration
+        .GetSection("Cors:AllowedOrigins").Get<string[]>()
+        ?? new[] { "http://localhost:4200" };
     builder.Services.AddCors(options =>
     {
         options.AddPolicy(CorsPolicy, policy =>
-            policy.WithOrigins("http://localhost:4200")
+            policy.WithOrigins(allowedOrigins)
                   .AllowAnyHeader()
                   .AllowAnyMethod());
     });
