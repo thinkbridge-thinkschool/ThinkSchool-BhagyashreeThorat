@@ -44,7 +44,7 @@ export class Admin {
     }),
     text: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [Validators.required , Validators.maxLength(100)],
     }),
   });
 
