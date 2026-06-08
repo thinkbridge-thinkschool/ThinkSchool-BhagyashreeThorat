@@ -1,0 +1,69 @@
+<section class="admin">
+  <header class="admin-header">
+    <h1>Create quote (Signal Forms)</h1>
+    <button type="button" class="logout" (click)="logout()">Logout</button>
+  </header>
+
+  <form (submit)="onSubmit($event)" novalidate>
+    <div class="field">
+      <label for="author">Author</label>
+      <input
+        id="author"
+        type="text"
+        autocomplete="off"
+        [formField]="quoteForm.author"
+        [attr.aria-invalid]="showError('author')"
+        [attr.aria-describedby]="describedBy('author')"
+      />
+      @if (showError('author')) {
+        <p id="author-error" class="field-error" role="alert">
+          {{ errorMessage('author') }}
+        </p>
+      }
+    </div>
+
+    <div class="field">
+      <label for="text">Text</label>
+      <textarea
+        id="text"
+        [formField]="quoteForm.text"
+        [attr.aria-invalid]="showError('text')"
+        [attr.aria-describedby]="describedBy('text')"
+      ></textarea>
+      @if (showError('text')) {
+        <p id="text-error" class="field-error" role="alert">
+          {{ errorMessage('text') }}
+        </p>
+      }
+    </div>
+
+    <button type="submit" [disabled]="quoteForm().submitting()">
+      @if (quoteForm().submitting()) {
+        Saving…
+      } @else {
+        Create quote
+      }
+    </button>
+
+    @if (quoteForm().submitting()) {
+      <p class="status status--busy" role="status">Submitting quote…</p>
+    }
+    @if (serverError(); as message) {
+      <p class="status status--error" role="alert">{{ message }}</p>
+    }
+    @if (createdQuote(); as created) {
+      <p class="status status--success" role="status">
+        Created quote #{{ created.id }} by {{ created.author }}.
+      </p>
+    }
+  </form>
+
+  <dl class="form-state" aria-hidden="true">
+    <div><dt>pristine</dt><dd>{{ !quoteForm().dirty() }}</dd></div>
+    <div><dt>dirty</dt><dd>{{ quoteForm().dirty() }}</dd></div>
+    <div><dt>touched</dt><dd>{{ quoteForm().touched() }}</dd></div>
+    <div><dt>valid</dt><dd>{{ quoteForm().valid() }}</dd></div>
+    <div><dt>invalid</dt><dd>{{ quoteForm().invalid() }}</dd></div>
+    <div><dt>submitting</dt><dd>{{ quoteForm().submitting() }}</dd></div>
+  </dl>
+</section>
