@@ -13,24 +13,11 @@ import { errorMappingInterceptor } from './interceptors/error-mapping.intercepto
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    // Explicit zoneless change detection — there is no zone.js dependency or
-    // polyfill in this project, so signals/effects drive change detection.
     provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
-    // Interceptor ORDER matters. Request flows top->bottom; the response/error
-    // bubbles back bottom->top:
-    //   1. authInterceptor          - attach Bearer (skips /api/auth/*)
-    //   2. errorMappingInterceptor  - maps the FINAL error -> typed AppError
-    //   3. retryInterceptor         - innermost; retries transient GETs, so the
-    //      error-mapper only sees the error AFTER retries are exhausted.
     provideHttpClient(
       withInterceptors([authInterceptor, errorMappingInterceptor, retryInterceptor]),
     ),
-    // withViewTransitions() wraps every router navigation in the browser's
-    // document.startViewTransition(), so moving between the quotes LIST ('') and
-    // the quote DETAIL ('quotes/:id') cross-fades instead of hard-swapping. This
-    // is the single configuration point for the transition — no per-component
-    // code is needed for the default animation.
     provideRouter(routes, withViewTransitions()),
   ],
 };

@@ -1,8 +1,6 @@
 <section class="quotes">
   <header class="quotes-header">
     <h1>Quotes</h1>
-    <!-- Public homepage: NO create form here. Admin opens a login popup
-         in-place (no route change) via this button. -->
     <button
       #adminButton
       type="button"
@@ -13,7 +11,6 @@
     </button>
   </header>
 
-  <!-- Search over the loaded list (label associated via for/id). -->
   <div class="search">
     <label for="quote-search">Search quotes</label>
     <input
@@ -26,7 +23,6 @@
   </div>
 
   <div class="layout">
-    <!-- ============ LIST PANEL ============ -->
     <div class="list-panel">
       @if (loading()) {
         <p class="status">Loading quotes…</p>
@@ -54,8 +50,6 @@
                 <blockquote>{{ quote.text }}</blockquote>
                 <cite>— {{ quote.author }}</cite>
               </button>
-              <!-- Deep-link to the lazy, view-transitioned detail ROUTE.
-                   `id` is the REAL backend identifier. -->
               <a class="quote-open" [routerLink]="['/quotes', quote.id]">
                 Open
               </a>
@@ -72,7 +66,6 @@
       }
     </div>
 
-    <!-- ============ DETAIL PANEL ============ -->
     <aside class="detail-panel">
       <h2>Detail</h2>
 
@@ -101,7 +94,6 @@
     </aside>
   </div>
 
-  <!-- Admin login popup. Mounted only while open; emits loggedIn / closed. -->
   @if (showLogin()) {
     <app-admin-login-modal
       (loggedIn)="onLoggedIn()"

@@ -10,8 +10,6 @@ import { QuoteService } from '../../services/quote/quote.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CreateQuote, Quote } from '../../models/quote.model';
 
-// Strongly-typed reactive form shape. Non-nullable string controls, so
-// `getRawValue()` resolves to exactly the `CreateQuote` contract — no `any`.
 interface CreateQuoteForm {
   author: FormControl<string>;
   text: FormControl<string>;
@@ -30,7 +28,6 @@ export class Admin {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
 
-  // Native refs so a failed submit moves focus to the first invalid control.
   private readonly authorInput =
     viewChild<ElementRef<HTMLInputElement>>('authorInput');
   private readonly textInput =
@@ -40,8 +37,6 @@ export class Admin {
   protected readonly serverError = signal<string | null>(null);
   protected readonly createdQuote = signal<Quote | null>(null);
 
-  // Only `required` — the real contract advertises no other constraints, so
-  // none are invented.
   protected readonly form = new FormGroup<CreateQuoteForm>({
     author: new FormControl('', {
       nonNullable: true,
@@ -70,7 +65,6 @@ export class Admin {
     return this.isInvalid(name) ? `${name}-error` : null;
   }
 
-  // POST /api/quotes — the JWT is attached automatically by the interceptor.
   protected createQuote(): void {
     if (this.submitting()) {
       return;
@@ -78,7 +72,6 @@ export class Admin {
     this.serverError.set(null);
     this.createdQuote.set(null);
 
-    // Trim BEFORE validating so whitespace-only input fails `required`.
     this.form.setValue({
       author: this.form.controls.author.value.trim(),
       text: this.form.controls.text.value.trim(),

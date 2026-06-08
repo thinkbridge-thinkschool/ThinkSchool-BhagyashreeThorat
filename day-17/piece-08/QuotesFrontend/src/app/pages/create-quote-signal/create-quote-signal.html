@@ -4,8 +4,6 @@
     <button type="button" class="logout" (click)="logout()">Logout</button>
   </header>
 
-  <!-- We handle the native submit ourselves (no FormRoot) so our HTTP action
-       runs. novalidate disables the browser's own bubble validation. -->
   <form (submit)="onSubmit($event)" novalidate>
     <div class="field">
       <label for="author">Author</label>
@@ -60,8 +58,6 @@
     }
   </form>
 
-  <!-- Live readout of the Signal Forms field states. aria-hidden because it is
-       a developer-facing debug panel, not part of the form's a11y tree. -->
   <dl class="form-state" aria-hidden="true">
     <div><dt>pristine</dt><dd>{{ !quoteForm().dirty() }}</dd></div>
     <div><dt>dirty</dt><dd>{{ quoteForm().dirty() }}</dd></div>
