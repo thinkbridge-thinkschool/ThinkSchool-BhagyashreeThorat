@@ -1,0 +1,35 @@
+<section class="quote-detail">
+  <a class="back-link" routerLink="/">← Back to quotes</a>
+
+  @switch (state().kind) {
+    @case ('loading') {
+      <p class="status">Loading quote…</p>
+    }
+    @case ('invalid') {
+      <p class="error">Invalid quote id.</p>
+    }
+    @case ('notFound') {
+      <p class="error">Quote not found.</p>
+    }
+    @case ('error') {
+      <p class="error">{{ asError(state()).message }}</p>
+    }
+    @case ('loaded') {
+      @let detail = asLoaded(state()).quote;
+      <article class="detail">
+        <blockquote>{{ detail.text }}</blockquote>
+        <cite>— {{ detail.author }}</cite>
+        <dl>
+          <dt>ID</dt>
+          <dd>{{ detail.id }}</dd>
+          <dt>Author ID</dt>
+          <dd>{{ detail.authorId }}</dd>
+          <dt>Owner ID</dt>
+          <dd>{{ detail.ownerId ?? '—' }}</dd>
+          <dt>Deleted</dt>
+          <dd>{{ detail.isDeleted ? 'Yes' : 'No' }}</dd>
+        </dl>
+      </article>
+    }
+  }
+</section>
