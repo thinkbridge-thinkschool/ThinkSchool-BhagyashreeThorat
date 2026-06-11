@@ -1,0 +1,66 @@
+version: "3.9"
+
+# Optional local development companion.
+# Testcontainers is the PRIMARY mechanism for integration tests.
+# This compose file is for developers who want a persistent SQL Server
+# instance running locally (e.g. to browse data with SSMS or Azure Data Studio).
+#
+# Usage:
+#   docker compose up -d
+#   # Update appsettings.Development.json to point at localhost:1433
+#   docker compose down
+
+services:
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"  # Jaeger UI — open http://localhost:16686 to view traces
+      - "4317:4317"    # OTLP gRPC receiver (matches OtlpEndpoint in appsettings.Development.json)
+      - "4318:4318"    # OTLP HTTP/protobuf receiver
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD
+        - /opt/mssql-tools18/bin/sqlcmd
+        - -S
+        - localhost
+        - -U
+        - sa
+        - -P
+        - "YourStrong@Passw0rd"
+        - -Q
+        - "SELECT 1"
+        - -C          # trust server certificate
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # Day-21 HybridCache lab: Redis is the L2 (distributed) tier behind the
+  # in-memory L1. A second API instance, or a restart, still reads warm data
+  # from Redis instead of hitting the DB. Published on 6379 so the app
+  # (running on the host via `dotnet run`) can reach it at localhost:6379.
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  sqlserver_data:

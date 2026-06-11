@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+name: quotes-api
+metadata:
+  template: azd-init@1.0.0
+services:
+  api:
+    project: ./QuotesApi
+    language: dotnet
+    host: containerapp
+    # No docker: section — uses dotnet publish /t:PublishContainer (respects ContainerImageName in .csproj)
