@@ -1,0 +1,200 @@
+# ============================================================
+#  Quotes API — Production CI Pipeline
+#  Triggers: every push on any branch, every PR targeting main
+# ============================================================
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+# Suppress noisy .NET CLI output that clutters CI logs
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  DOTNET_NOLOGO: true
+
+# ============================================================
+#  JOB 1 — Unit Tests
+#  Fast, no Docker required.  Covers service/repository logic
+#  via in-memory EF Core + NSubstitute mocks.
+# ============================================================
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # All `run:` steps execute relative to this directory.
+    # `uses:` steps (checkout, cache, upload-artifact) still resolve
+    # paths from the workspace root — see artifact paths below.
+    defaults:
+      run:
+        working-directory: day-17/structurechanges
+
+    steps:
+      # ── 1. Source ───────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. SDK ──────────────────────────────────────────────
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # ── 3. Cache ────────────────────────────────────────────
+      # Key is OS + hash of every .csproj so the cache is
+      # invalidated whenever a package reference changes.
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # ── 4. Restore ──────────────────────────────────────────
+      # Restoring the test project also restores QuotesApi
+      # (ProjectReference) — no separate restore step needed.
+      - name: Restore
+        run: dotnet restore Quotes.Tests.Unit/Quotes.Tests.Unit.csproj
+
+      # ── 5. Build ─────────────────────────────────────────────
+      # --no-restore: packages already downloaded; skip redundant
+      # network I/O.  Building the test project also compiles
+      # QuotesApi through its ProjectReference.
+      - name: Build
+        run: |
+          dotnet build Quotes.Tests.Unit/Quotes.Tests.Unit.csproj \
+            --no-restore \
+            --configuration Release
+
+      # ── 6. Test + Coverage ───────────────────────────────────
+      # --no-build    : binaries already compiled; skip rebuild.
+      # --logger trx  : structured XML results (GitHub/Azure can parse).
+      # --collect     : coverlet data-collector; emits cobertura XML.
+      # --settings    : enforces 70 % line-coverage threshold — the
+      #                 process exits non-zero if QuotesApi is below 70 %.
+      - name: Test
+        run: |
+          dotnet test Quotes.Tests.Unit/Quotes.Tests.Unit.csproj \
+            --no-build \
+            --configuration Release \
+            --verbosity normal \
+            --logger "trx;LogFileName=unit-results.trx" \
+            --collect:"XPlat Code Coverage" \
+            --settings coverage.runsettings \
+            --results-directory TestResults/unit
+
+      # ── 7. Upload TRX results ────────────────────────────────
+      # if: always() → upload even when tests fail so devs can
+      # inspect which tests broke without cloning the branch.
+      - name: Upload unit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-results
+          path: day-17/structurechanges/TestResults/unit/*.trx
+          retention-days: 30
+
+      # ── 8. Upload coverage XML ───────────────────────────────
+      # Cobertura XML can be fed to ReportGenerator locally or to
+      # any coverage-badge/PR-comment GitHub Action downstream.
+      - name: Upload unit coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-coverage-report
+          path: day-17/structurechanges/TestResults/unit/**/coverage.cobertura.xml
+          retention-days: 30
+
+  # ============================================================
+  #  JOB 2 — Integration Tests  (SQL Server via Testcontainers)
+  #  Runs in parallel with unit tests on the same runner type.
+  #  ubuntu-latest ships with Docker — no extra service needed.
+  #  Testcontainers pulls mcr.microsoft.com/mssql/server:2022-latest
+  #  automatically on first use.
+  # ============================================================
+  integration-tests:
+    name: Integration Tests (SQL Server via Testcontainers)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30   # Extra headroom for Docker image pull (~2 GB)
+    defaults:
+      run:
+        working-directory: day-17/structurechanges
+
+    steps:
+      # ── 1. Source ───────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. SDK ──────────────────────────────────────────────
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # ── 3. Cache ────────────────────────────────────────────
+      - name: Cache NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      # ── 4. Verify Docker is accessible ──────────────────────
+      # Fail early with a clear message if the runner has no Docker,
+      # rather than getting a cryptic Testcontainers timeout later.
+      - name: Verify Docker availability
+        run: docker info
+
+      # ── 5. Restore ──────────────────────────────────────────
+      - name: Restore
+        run: dotnet restore Tests.Domain/Tests.Domain.csproj
+
+      # ── 6. Build ─────────────────────────────────────────────
+      - name: Build
+        run: |
+          dotnet build Tests.Domain/Tests.Domain.csproj \
+            --no-restore \
+            --configuration Release
+
+      # ── 7. Test + Coverage ───────────────────────────────────
+      # Testcontainers uses the Docker socket on the runner directly.
+      # No manual SQL Server service block is needed — the library
+      # starts, migrates, and tears down the container automatically.
+      # DOCKER_HOST is set explicitly so Testcontainers finds the socket
+      # even if the runner's default socket path varies.
+      - name: Test (Testcontainers / SQL Server)
+        run: |
+          dotnet test Tests.Domain/Tests.Domain.csproj \
+            --no-build \
+            --configuration Release \
+            --verbosity normal \
+            --logger "trx;LogFileName=integration-results.trx" \
+            --collect:"XPlat Code Coverage" \
+            --settings coverage.runsettings \
+            --results-directory TestResults/integration
+        env:
+          DOCKER_HOST: unix:///var/run/docker.sock
+
+      # ── 8. Upload TRX results ────────────────────────────────
+      - name: Upload integration test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-results
+          path: day-17/structurechanges/TestResults/integration/*.trx
+          retention-days: 30
+
+      # ── 9. Upload coverage XML ───────────────────────────────
+      - name: Upload integration coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-coverage-report
+          path: day-17/structurechanges/TestResults/integration/**/coverage.cobertura.xml
+          retention-days: 30

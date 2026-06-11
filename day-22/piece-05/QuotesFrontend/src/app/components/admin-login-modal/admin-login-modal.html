@@ -1,0 +1,87 @@
+<div
+  class="modal-backdrop"
+  (click)="dismiss()"
+  (keydown.escape)="dismiss()"
+>
+  <div
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="admin-login-title"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="modal-header">
+      <h2 id="admin-login-title">Admin login</h2>
+      <button
+        type="button"
+        class="modal-close"
+        aria-label="Close login dialog"
+        (click)="dismiss()"
+      >
+        ×
+      </button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="login-email">Email</label>
+        <input
+          #emailInput
+          id="login-email"
+          type="email"
+          formControlName="email"
+          autocomplete="username"
+          [attr.aria-invalid]="isInvalid('email')"
+          [attr.aria-describedby]="describedBy('email')"
+        />
+        @if (isInvalid('email')) {
+          <p id="email-error" class="field-error" role="alert">
+            @if (form.controls.email.hasError('required')) {
+              Email is required.
+            } @else {
+              Enter a valid email address.
+            }
+          </p>
+        }
+      </div>
+
+      <div class="field">
+        <label for="login-password">Password</label>
+        <input
+          #passwordInput
+          id="login-password"
+          type="password"
+          formControlName="password"
+          autocomplete="current-password"
+          [attr.aria-invalid]="isInvalid('password')"
+          [attr.aria-describedby]="describedBy('password')"
+        />
+        @if (isInvalid('password')) {
+          <p id="password-error" class="field-error" role="alert">
+            Password is required.
+          </p>
+        }
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="secondary" (click)="dismiss()">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="submitting()">
+          @if (submitting()) {
+            Signing in…
+          } @else {
+            Login
+          }
+        </button>
+      </div>
+
+      @if (submitting()) {
+        <p class="status status--busy" role="status">Signing in…</p>
+      }
+      @if (loginError(); as message) {
+        <p class="status status--error" role="alert">{{ message }}</p>
+      }
+    </form>
+  </div>
+</div>
